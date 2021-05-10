@@ -128,6 +128,7 @@ func AddProduct(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+	w.WriteHeader(200)
 
 }
 
@@ -236,6 +237,72 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 
 	// Send the response with the data
 	w.Write(data)
-	fmt.Fprint(w, "This is okay")
 
+}
+
+func UpdateProduct(w http.ResponseWriter, r *http.Request) {
+
+	//Open and close the database Connection to make the changes
+	db := Database.Connection()
+
+	defer db.Close()
+
+	//Get the data from the request header and Parse it to our Products structure
+
+	products := Products{}
+
+	products.Color = r.FormValue("color")
+	products.Price = r.FormValue("price")
+	products.Product = r.FormValue("product")
+	products.Size = r.FormValue("size")
+	products.Technology = r.FormValue("technology")
+	id := r.FormValue("id")
+
+	//Use The data and Product ID to update the Particular Update
+
+	query := "Update `products` SET `Color` = ?,`Price` = ?,`Technology` = ?,`Size` = ?,`Type` = ? Where `Product ID` = ?"
+
+	_, err := db.Exec(query, &products.Color, &products.Price, &products.Technology, &products.Size, &products.Product, &id)
+
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	//Send OK as Response
+	fmt.Fprint(w, "OK")
+
+}
+
+func DeleteProduct(w http.ResponseWriter, r *http.Request) {
+	//Open a connection to The database
+
+	db := Database.Connection()
+
+	defer db.Close()
+
+	//Get the ID to use in the query for deleting the product
+	var id1 string
+
+	id, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	json.Unmarshal(id, &id1)
+
+	//Query String
+
+	query := "Delete From products Where `products`.`Product ID` = ?"
+
+	//Execute the Query
+	_, err = db.Exec(query, id)
+
+	if err != nil {
+		fmt.Print(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	//Send status 200 as the header response if no error is detected
+	w.WriteHeader(200)
 }

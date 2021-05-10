@@ -24,6 +24,10 @@ func handlers() {
 		Methods("Post")
 	r.HandleFunc("/getProducts", routes.GetProducts).
 		Methods("GET")
+	r.HandleFunc("/update-product", routes.UpdateProduct).
+		Methods("POST")
+	r.HandleFunc("/delete-product", routes.DeleteProduct).
+		Methods("DELETE")
 	r.HandleFunc("/", homepage).Methods("GET")
 
 	// http.Handle("/", r)
