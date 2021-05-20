@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	Database "monk.com/monk/src/server/database"
+	"monk.com/monk/src/server/utils/tokens"
 )
 
 type User struct {
@@ -85,22 +86,19 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 		Password string
 	}
 
-	// Confirming its a post Method
-	if r.Method != "POST" {
-		fmt.Print("Invalid Operation")
+	type userResponse struct {
+		FirstName    string `json:"first"`
+		LastName     string `json:"last"`
+		Email        string `json:"email"`
+		ID           string `json:"ID"`
+		Access_Token string `json:"access_token"`
 	}
 
-	// Get the and Parse the data from the request Body
+	// Get the and Parse the data from the request Param Query
 	userDetails := userInfo{}
 
-	body, err := ioutil.ReadAll(r.Body)
-
-	if err != nil {
-		fmt.Print("There was an error readinf the request", err)
-	}
-
-	json.Unmarshal(body, &userDetails)
-	fmt.Print(userDetails)
+	userDetails.Email = r.URL.Query().Get("email")
+	userDetails.Password = r.URL.Query().Get("password")
 
 	// Get the Particular User With their unique Email
 	db := Database.Connection()
@@ -109,30 +107,54 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 
 	// This is the registered User
 	user := User{}
+	rsp := userResponse{}
 
-	row := db.QueryRow("SELECT `firstName`, `Second Name`, `Email`,`Password` FROM users WHERE Email = ?", userDetails.Email)
+	row := db.QueryRow("SELECT `firstName`, `Second Name`, `Email`,`Password`, `User ID` FROM users WHERE Email = ?", &userDetails.Email)
 
-	err = row.Scan(&user.FirstName, &user.LastName, &user.Email, &user.Password)
+	err := row.Scan(&user.FirstName, &user.LastName, &user.Email, &user.Password, &rsp.ID)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Fprint(w, "No such User")
+			w.WriteHeader(401)
 			return
 		} else {
 			panic(err)
 		}
 	}
-	fmt.Print(user)
 
 	//Compare the Password with the one Hashed and stored in the database
 	byteHash := []byte(user.Password)
 
 	err = bcrypt.CompareHashAndPassword(byteHash, []byte(userDetails.Password))
 
+	//If there is an error the passwords did not match
 	if err != nil {
-		fmt.Fprint(w, "Not Authenticated")
+		w.WriteHeader(401)
 		return
 	}
 
-	fmt.Fprint(w, "Authenticated")
+	//Sign the Access token for Authentication
+	access_token, err := tokens.SignTokens(rsp.ID)
+
+	//If there is an error the token couldnt be created
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	//Store the values in a response struct
+	rsp.Access_Token = access_token
+	rsp.Email = user.Email
+	rsp.FirstName = user.FirstName
+	rsp.LastName = user.LastName
+
+	//Marshall the response in a json format
+	data, err := json.Marshal(rsp)
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	// Send the response with the data
+	w.WriteHeader(200)
+	w.Write(data)
 }
