@@ -2,6 +2,7 @@ package routes
 
 import (
 	"bufio"
+	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -22,6 +23,16 @@ type Products struct {
 	Color      string `json:"color"`
 	Price      string `json:"price"`
 	Size       string `json:"size"`
+}
+
+type ProductsImages struct {
+	Product    string `json:"product"`
+	Technology string `json:"technology"`
+	ProductID  string `json:"productID"`
+	Color      string `json:"color"`
+	Price      int    `json:"price"`
+	Size       string `json:"size"`
+	ImageUrl   []string
 }
 
 func Check(e error) {
@@ -140,16 +151,6 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	//Model for the data recieved from the database
-
-	type ProductsImages struct {
-		Product    string `json:"product"`
-		Technology string `json:"technology"`
-		ProductID  string `json:"productID"`
-		Color      string `json:"color"`
-		Price      int    `json:"price"`
-		Size       string `json:"size"`
-		ImageUrl   []string
-	}
 
 	var products ProductsImages
 
@@ -305,4 +306,140 @@ func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 
 	//Send status 200 as the header response if no error is detected
 	w.WriteHeader(200)
+}
+
+func GetProduct(w http.ResponseWriter, r *http.Request) {
+
+	db := Database.Connection()
+
+	defer db.Close()
+
+	//Get the URL Parameter from the request
+	id := r.URL.Query().Get("id")
+
+	var products ProductsImages
+
+	//Queries to get Data from the database
+	query := "Select `Color`,`Technology`,`Size`,`Price`,`Product ID`,`Type` from products Where `Product ID` = ?"
+
+	//Execute the Query
+	row := db.QueryRow(query, id)
+
+	// Switch for Error handling
+	switch err := row.Scan(&products.Color, &products.Technology, &products.Size, &products.Price, &products.ProductID, &products.Product); err {
+	case sql.ErrNoRows:
+		fmt.Println("No rows were returned!")
+	case nil:
+		//Get the Image URL Strings
+
+		// Get The clothing Image
+
+		productId := products.ProductID
+
+		query1 := "select `ImageURL` from images where ProductID = ?"
+
+		rows, err := db.Query(query1, productId)
+
+		if err != nil {
+			fmt.Print(err)
+		}
+		defer rows.Close()
+
+		urls := make([]string, 0)
+
+		//Loop over the results and store and read the  the URL in an array of ImageUrl
+
+		for rows.Next() {
+			var url string
+			err := rows.Scan(&url)
+
+			if err != nil {
+				fmt.Print(err)
+			}
+
+			dat, err := os.Open("uploads/" + url)
+
+			if err != nil {
+				fmt.Print(err)
+			}
+			defer dat.Close()
+
+			//Convert the image into a Base64 format
+
+			reader := bufio.NewReader(dat)
+			content, _ := ioutil.ReadAll(reader)
+
+			encoded := base64.StdEncoding.EncodeToString(content)
+
+			urls = append(urls, encoded)
+		}
+
+		products.ImageUrl = urls
+
+		// //Set the header to show that the data is of JSON type
+		w.Header().Set("Content-Type", "application/json")
+
+		//Convert the data to a JSON
+
+		data, err := json.Marshal(products)
+		if err != nil {
+			fmt.Print(err)
+		}
+
+		// Send the response with the data
+
+		w.Write(data)
+	default:
+		panic(err)
+	}
+
+}
+
+//Function to send all Product IDs inorder to generate dynamic routes
+
+func GetStaticPath(w http.ResponseWriter, r *http.Request) {
+
+	//Open the database Connection
+	db := Database.Connection()
+
+	defer db.Close()
+
+	//Cloes the connection once Finsihed
+
+	//Query for all Product IDs
+	query := "Select `product ID` from `products`"
+
+	rows, err := db.Query(query)
+
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
+
+	defer rows.Close()
+
+	// The array to store all the IDs
+	var res []string
+
+	for rows.Next() {
+		var id string
+
+		err = rows.Scan(&id)
+
+		if err != nil {
+			fmt.Print(err)
+			return
+		}
+
+		res = append(res, id)
+	}
+
+	//Marshall the data to JSON formart for the Front-End
+	data, err := json.Marshal(res)
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	// Send the response with the data
+	w.Write(data)
 }

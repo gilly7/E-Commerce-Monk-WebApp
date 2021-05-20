@@ -1,46 +1,54 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import {userContext} from "../utils/contexts/userContext"
-import {useRouter} from "next/router"
-
+import { userContext } from "../utils/contexts/userContext";
+import { useRouter } from "next/router";
 
 export default function EditProduct() {
   const { register, handleSubmit } = useForm();
 
-  const {edit, determinor} = useContext(userContext)
+  const { edit, determinor, userDetails } = useContext(userContext);
 
-  const {editInfo} = edit
-  const {setDetermine} = determinor
+  const { editInfo } = edit;
+  const { setDetermine } = determinor;
+  const { user } = userDetails;
 
   //Declare NextJs Router
-  const router = useRouter()
+  const router = useRouter();
 
   // Function to send data to the backend with use of Axios
   const onSubmit = (data) => {
-
     const formData = new FormData();
     formData.append("product", data.product);
     formData.append("technology", data.technology);
     formData.append("color", data.color);
     formData.append("price", data.price);
     formData.append("size", data.size);
-    formData.append("id", editInfo.productID)
+    formData.append("id", editInfo.productID);
 
-    axios({
-      method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      url: "http://localhost:9000/update-product",
-      data: formData,
-    })
-      .then((res) => {
-        if (res.data == "OK"){
-          router.reload()
-        }
+    //Check before hand of There is a user stored in memory
+
+    if (user == null) {
+      router.push("/check-in/login");
+    } else {
+      axios({
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `bearer ${user.access_token}`,
+        },
+        url: "http://localhost:9000/update-product",
+        data: formData,
       })
-      .catch((err) => console.log(err.message));
+        .then((res) => {
+          if (res.data == 401) {
+            router.push("/check-in/login");
+          } else {
+            router.reload();
+          }
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   return (
@@ -80,7 +88,7 @@ export default function EditProduct() {
                   name="product"
                   className="focus:ring-indigo-500 focus:border-indigo-500 block mx-w-xs pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
                   {...register("product")}
-                  defaultValue = {editInfo.product}
+                  defaultValue={editInfo.product}
                 >
                   <option selected value="Hoodies">
                     Hood
@@ -108,7 +116,7 @@ export default function EditProduct() {
                   name="technology"
                   className="focus:ring-indigo-500 focus:border-indigo-500 block mx-w-xs pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
                   {...register("technology")}
-                  defaultValue = {editInfo.technology}
+                  defaultValue={editInfo.technology}
                 >
                   <option value="Patch">Badge Patch</option>
                   <option selected value="Vynl">
@@ -137,7 +145,7 @@ export default function EditProduct() {
                   name="color"
                   className="focus:ring-indigo-500 focus:border-indigo-500 block mx-w-xs pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
                   {...register("color")}
-                  defaultValue = {editInfo.color}
+                  defaultValue={editInfo.color}
                 />
               </div>
             </div>
@@ -157,7 +165,7 @@ export default function EditProduct() {
                     name="price"
                     className="block mx-w-xs pl-7 pr-12 sm:text-sm border-gray-300 rounded-md w-1/2 appearance-textfield"
                     {...register("price")}
-                    defaultValue = {editInfo.price}
+                    defaultValue={editInfo.price}
                   />
                 </div>
               </div>

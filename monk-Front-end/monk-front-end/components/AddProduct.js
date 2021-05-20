@@ -1,58 +1,60 @@
-import React from "react";
-import { useForm} from "react-hook-form";
+import React, { useContext } from "react";
+import { useForm } from "react-hook-form";
 import axios from "axios";
-import {useRouter} from "next/router"
+import { useRouter } from "next/router";
+import { userContext } from "../pages/utils/contexts/userContext";
 
 export default function AddProduct() {
-  const { register, handleSubmit} = useForm();
-  const router = useRouter()
+  const { register, handleSubmit } = useForm();
+  const router = useRouter();
 
-// Function to send data to the backend with use of Axios
+  const { userDetails } = useContext(userContext);
+  const { user } = userDetails;
+
+  // Function to send data to the backend with use of Axios
   const onSubmit = (data) => {
+    const formData = new FormData();
+    formData.append("product", data.product);
+    formData.append("technology", data.technology);
+    formData.append("color", data.color);
+    formData.append("price", data.price);
+    formData.append("size", data.size);
+    formData.append("file", data.file);
 
+    //Loop over the file array of file objects getting the image and file / Image name
+    Object.entries(data.file).map((image) => {
+      formData.append("file", image[1], image[1].name);
+    });
 
-    const formData = new FormData()
-    formData.append("product", data.product)
-    formData.append("technology", data.technology)
-    formData.append("color", data.color)
-    formData.append("price", data.price)
-    formData.append("size", data.size)
-    formData.append("file", data.file)
-    
-    // console.log(data.file)
-
-    // for (let image in data.file){
-    //     console.log(image)
-    // }
-    Object.entries(data.file).map(image => {
-        formData.append("file",image[1], image[1].name )
-    })
-
-    console.log(formData.get("file"))
-  
-    
-    axios({
-      method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      url: "http://localhost:9000/add-products",
-      data: formData,
-    })
-      .then((res) => {
-        if(res.status === 200){
-          router.reload()
-        }
+    //Check before hand of There is a user stored in memory
+    if (user == null) {
+      router.push("/check-in/login");
+    } else {
+      axios({
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${user.access_token}`,
+        },
+        url: "http://localhost:9000/add-products",
+        data: formData,
       })
-      .catch((err) => console.log(err.message));
+        .then((res) => {
+          if (res.data == 401) {
+            router.push("/check-in/login");
+          } else {
+            router.reload();
+          }
+        })
+        .catch((err) => console.log(err.message));
+    }
   };
 
   return (
-// This is a Form to Add Products
+    // This is a Form to Add Products
 
     <div className="flex flex-row w-full p-4">
-
-{/* Extra Info on form module */}
+      {/* Extra Info on form module */}
 
       <div className="w-1/4 ">
         <h1 className="font-serif text-2xl pb-4">Add Product</h1>
@@ -63,16 +65,14 @@ export default function AddProduct() {
         </p>
       </div>
 
-{/* End of Extra Info on form module */}
+      {/* End of Extra Info on form module */}
 
       <div className="flex items-center justify-center flex-grow border-gray-300 flex-wrap">
         <div className="flex items-center px-12 p-2 shadow-md rounded-md">
-
-{/* This is where the form starts */}
+          {/* This is where the form starts */}
 
           <form onSubmit={handleSubmit(onSubmit)}>
-
-{/* Product Type Module */}
+            {/* Product Type Module */}
 
             <div className="object-none object-center mx-w-xs m-2">
               <label
@@ -97,9 +97,9 @@ export default function AddProduct() {
               </div>
             </div>
 
-{/* End Of Product Type Module */}
+            {/* End Of Product Type Module */}
 
-{/* The Type Of Tech Module */}
+            {/* The Type Of Tech Module */}
 
             <div className="object-none object-center mx-w-xs m-2">
               <label
@@ -124,9 +124,9 @@ export default function AddProduct() {
               </div>
             </div>
 
-{/* End Of The Type Of Tech Module */}
+            {/* End Of The Type Of Tech Module */}
 
-{/* Color of the Product Module */}
+            {/* Color of the Product Module */}
 
             <div className="object-none object-center mx-w-xs m-2">
               <label
@@ -146,9 +146,9 @@ export default function AddProduct() {
               </div>
             </div>
 
-{/*End Color of the Product Module */}
+            {/*End Color of the Product Module */}
 
-{/* Images of the Product Module */}
+            {/* Images of the Product Module */}
 
             <div className="object-none object-center mx-w-xs m-2">
               <label
@@ -183,10 +183,9 @@ export default function AddProduct() {
               </div>
             </div>
 
-{/*End of Images of the Product Module */}
+            {/*End of Images of the Product Module */}
 
-{/* Price of the Product Module */}
-
+            {/* Price of the Product Module */}
 
             <div className="flex justify-between px-2">
               <div className="">
@@ -203,9 +202,9 @@ export default function AddProduct() {
                 </div>
               </div>
 
-{/* End of Price of the Product Module */}
+              {/* End of Price of the Product Module */}
 
-{/* Size of the Product Module */}
+              {/* Size of the Product Module */}
 
               <div>
                 <div>
@@ -226,7 +225,7 @@ export default function AddProduct() {
               </div>
             </div>
 
-{/* End of Size of the Product Module */}
+            {/* End of Size of the Product Module */}
 
             <div className="flex justify-center p-2">
               <input
@@ -237,8 +236,7 @@ export default function AddProduct() {
             </div>
           </form>
 
-{/* End of Add Product Form */}
-
+          {/* End of Add Product Form */}
         </div>
       </div>
     </div>
