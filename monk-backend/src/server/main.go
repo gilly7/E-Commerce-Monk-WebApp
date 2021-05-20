@@ -7,7 +7,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"monk.com/monk/src/server/routes"
-	"monk.com/monk/src/server/utils/middleware"
 )
 
 var r *mux.Router
@@ -20,21 +19,15 @@ func handlers() {
 	r.HandleFunc("/register", routes.RegisterUsers).
 		Methods("Post")
 	r.HandleFunc("/login", routes.LogIn).
-		Methods("GET")
-	r.HandleFunc("/add-products", middleware.Authenticate(routes.AddProduct)).
+		Methods("Post")
+	r.HandleFunc("/add-products", routes.AddProduct).
 		Methods("Post")
 	r.HandleFunc("/getProducts", routes.GetProducts).
 		Methods("GET")
-	r.HandleFunc("/get-product", routes.GetProduct).
-		Methods("GET")
-	r.HandleFunc("/get-path", routes.GetStaticPath).
-		Methods("GET")
-	r.HandleFunc("/update-product", middleware.Authenticate(routes.UpdateProduct)).
+	r.HandleFunc("/update-product", routes.UpdateProduct).
 		Methods("POST")
-	r.HandleFunc("/delete-product", middleware.Authenticate(routes.DeleteProduct)).
+	r.HandleFunc("/delete-product", routes.DeleteProduct).
 		Methods("DELETE")
-	r.HandleFunc("/payment", middleware.Payment(routes.AddOrder)).
-		Methods("POST")
 	r.HandleFunc("/", homepage).Methods("GET")
 
 	// http.Handle("/", r)
@@ -49,7 +42,6 @@ func handlers() {
 }
 
 func main() {
-
 	handlers()
 	fmt.Println("Started working")
 }

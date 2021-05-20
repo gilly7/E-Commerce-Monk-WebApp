@@ -37,6 +37,34 @@ export default function Admin({ data }) {
     }
   };
 
+const hoodies = (product) => {
+  return product.product == "Hoodies"
+}
+const tShirts = (product) => {
+  return product.product == "T-Shirt"
+}
+const shorts = (product) => {
+  return product.product == "shorts"
+}
+
+var hoodQuantity = data.filter(hoodies)
+var shirtQuantity = data.filter(tShirts)
+var shortsQuantity = data.filter(shorts)
+
+  const graphData = [
+    {
+      quarter: "Hoodies",
+      quantity: hoodQuantity.length
+    },
+    {
+      quarter: "T-Shirts",
+      quantity: shirtQuantity.length,
+    },
+    {
+      quarter: "Biker-Shorts",
+      quantity: shortsQuantity.length
+    },
+  ];
 
   return (
     // Beginning of the admin Page
@@ -96,8 +124,6 @@ export default function Admin({ data }) {
     // {/* End of Main Section of The Admin Page */}
   );
 }
-
-//NextJs function to get static Props from the server
 
 export const getStaticProps = async (context) => {
   const res = await axios({

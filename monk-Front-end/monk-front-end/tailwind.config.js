@@ -6,19 +6,11 @@ module.exports = {
     fontFamily:{
       'serif': ["DM Serif Display"],
       'body': ['"Noto Serif"'],
-      'normal': ['"Bree Serif"'],
-      'poppins': ["Poppins"],
-    },
+      'normal': ['"Bree Serif"']
+    }
   },
   variants: {
-    extend: {
-      borderWidth: ['hover'],
-      cursor: ['hover'],
-      display: ['group-hover'],
-      flex: ['group-hover'],
-      visibility: ['group-hover'],
-      justifyContent: ['group-hover'],
-    },
+    extend: {},
   },
   plugins: [require('@tailwindcss/forms'),],
 }

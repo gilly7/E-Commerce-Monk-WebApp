@@ -1,13 +1,14 @@
 import React from "react";
 import Nav from "./Nav";
 import Head from "next/head";
-import Footer from "./Footer";
 
 export default function Layout({ children }) {
   return (
-    // Beginning for all pages as this is the default layout -- Defines the pages outlook
+
+  // Beginning for all pages as this is the default layout -- Defines the pages outlook
     <div className="components">
-      {/* Beginning of the head component of the webpages */}
+
+{/* Beginning of the head component of the webpages */}
 
       <Head>
         <title>Create Next App</title>
@@ -28,30 +29,17 @@ export default function Layout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap"
           rel="stylesheet"
         />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
-          rel="stylesheet"
-        />
-        <script
-      
-          id = "my-script"
-          src = "/script/script.js"
-          type = "text/javascript"
-        >
-        </script>
       </Head>
 
-      {/* End of the head component of the webpages */}
+{/* End of the head component of the webpages */}
 
-      {/* Layout Defination --All Pages will come below the Nav Component as indicated */}
+{/* Layout Defination --All Pages will come below the Nav Component as indicated */}
 
       <Nav />
       {children}
-      <Footer />
     </div>
 
-    // Beginning for all pages as this is the default layout -- Defines the pages outlook
+// Beginning for all pages as this is the default layout -- Defines the pages outlook
   );
 }
 
@@ -61,7 +49,7 @@ export async function getStaticProps(context) {
     url: "http://localhost:9000/getProducts",
   });
 
-  console.log(res);
+  console.log(res)
 
   const data = res.data;
 

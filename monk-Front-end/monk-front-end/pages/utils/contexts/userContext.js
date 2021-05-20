@@ -4,9 +4,7 @@ import { createContext, useState } from "react";
 export const userContext = createContext();
 
 export const UserProvider = (props) => {
-  const [user, setUser] = useState(null);
-
-  const [cartContent, setCartContent] = useState([])
+  const [user, setUser] = useState(["Monk"]);
 
   const [editInfo, setEditInfo] = useState("This is");
 
@@ -18,7 +16,6 @@ export const UserProvider = (props) => {
         userDetails: { user, setUser },
         edit: { editInfo, setEditInfo },
         determinor: { determine, setDetermine },
-        cart: {cartContent, setCartContent}
       }}
     >
       {props.children}
