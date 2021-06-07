@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gorilla/context"
+
 	"github.com/stripe/stripe-go"
 	"github.com/stripe/stripe-go/paymentintent"
 	"monk.com/monk/src/server/utils"
@@ -13,8 +15,10 @@ import (
 type DataForIntent struct {
 	PaymentMethodType string `json:"type"`
 	Currency          string `json:"currency"`
-	Amount            string `json:"amount"`
+	Amount            int    `json:"amount"`
 	ID                string `json:"id"`
+	UserID            string `json:"userID"`
+	ProductID         string `json:"productID"`
 }
 
 //Pass a handlerFunc as Argument and
@@ -53,7 +57,7 @@ func Payment(f http.HandlerFunc) http.HandlerFunc {
 			Confirm: &ok,
 		}
 
-		//Creaetes the payment intent
+		// Creates the payment intent
 		_, err = paymentintent.New(params)
 
 		if err != nil {
@@ -61,6 +65,8 @@ func Payment(f http.HandlerFunc) http.HandlerFunc {
 		}
 
 		//this ensures that the handleFunc used as the argument is run
+		context.Set(r, "product", data.ProductID)
+		context.Set(r, "user", data.UserID)
 		f.ServeHTTP(w, r)
 	}
 }

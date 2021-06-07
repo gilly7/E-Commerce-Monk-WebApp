@@ -189,7 +189,7 @@ export default function index({ data }) {
                 className="flex flex-col justify-start mx-2 hover:shadow-lg hover:cursor-pointer"
               >
                 <div className="aspect-w-16 aspect-h-9 relative h-36 w-40  md:h-48 md:w-60 bg-gray-200">
-                  <Link href = {`/clothing/${short.productID}`}>
+                  <Link href={`/clothing/${short.productID}`}>
                     <Image
                       src={`data:image/jpeg;base64,${short.ImageUrl[0]}`}
                       layout="fill"
@@ -220,8 +220,6 @@ export default function index({ data }) {
       </div>
 
       {/* End of the Products Snippets */}
-
-     
     </div>
   );
 }

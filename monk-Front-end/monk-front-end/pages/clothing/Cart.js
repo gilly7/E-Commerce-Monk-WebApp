@@ -134,12 +134,14 @@ const Cart = () => {
                   <div className="w-3/4 md:w-1/2 cursor-pointer ">
                     <h1 className="">Check Out </h1>
                     <Payment
-                      data={
-                        changed.includes(clothing)
+                      data={{
+                        price: changed.includes(clothing)
                           ? parseInt(clothing.price) *
                             parseInt(clothing.quantity)
-                          : clothing.price
-                      }
+                          : clothing.price,
+
+                        productID: clothing.productID,
+                      }}
                     />
                   </div>
 

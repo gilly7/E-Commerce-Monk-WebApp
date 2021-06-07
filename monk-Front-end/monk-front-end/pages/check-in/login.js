@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 
 import Link from "next/link";
-import {useRouter} from "next/router"
+import { useRouter } from "next/router";
 
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -9,13 +9,12 @@ import { userContext } from "../utils/contexts/userContext";
 import { route } from "next/dist/next-server/server/router";
 
 export default function login() {
-
   //User Context to store the user Details
   const { userDetails } = useContext(userContext);
 
   const { setUser } = userDetails;
 
-  const router = useRouter()
+  const router = useRouter();
 
   //Submit function to send the form data to the server
   const { register, handleSubmit } = useForm();
@@ -29,11 +28,10 @@ export default function login() {
       },
     })
       .then((res) => {
-        
         if (res.status == 200) {
           setUser(res.data);
-          router.replace("/check-in/login")
-          router.back()
+          router.replace("/check-in/login");
+          router.back();
         }
       })
       .catch((err) => console.log(err.message));

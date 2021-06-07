@@ -37,7 +37,11 @@ const nav = () => {
         <div>
           <p className="mx-8">
             <span className="rounded-full h-5 w-5 border-red-600"></span>
-            {user == undefined || null ? <h1>Anonymous</h1> : <h1>{user.first}</h1>}
+            {user == undefined || null ? (
+              <h1>Anonymous</h1>
+            ) : (
+              <h1>{user.first}</h1>
+            )}
           </p>
         </div>
         <Link href="/clothing/Cart">
@@ -50,7 +54,9 @@ const nav = () => {
         </Link>
         <div>
           {user == undefined || null ? (
-            <Link href="/check-in/login" className = "cursor-pointer">Login</Link>
+            <Link href="/check-in/login" className="cursor-pointer">
+              Login
+            </Link>
           ) : (
             <Image
               src="/images/user-icon.svg"

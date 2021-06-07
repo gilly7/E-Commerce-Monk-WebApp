@@ -61,16 +61,16 @@ export default function PaymentForm({ data }) {
 
       try {
         const { id, type } = paymentMethod;
-        console.log(paymentMethod)
         const res = await axios({
           method: "POST",
           url: "http://localhost:9000/payment",
           data: {
             id,
             type,
-            amount: parseInt(data) * 1000,
+            amount: parseInt(data.price) * 1000,
             currency: "USD",
-            user,
+            userID: user["ID"],
+            productID: data.productID
           },
         });
 
@@ -107,7 +107,7 @@ export default function PaymentForm({ data }) {
             disabled={!stripe}
             className="my-4 hover:shadow-md p-2 rounded-md"
           >
-            Pay Ksh. {data}
+            Pay Ksh. {data.price}
           </button>
         </form>
       ) : (
