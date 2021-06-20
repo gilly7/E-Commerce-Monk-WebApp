@@ -34,12 +34,10 @@ export default function Layout({ children }) {
           rel="stylesheet"
         />
         <script
-      
-          id = "my-script"
-          src = "/script/script.js"
-          type = "text/javascript"
-        >
-        </script>
+          id="my-script"
+          src="/script/script.js"
+          type="text/javascript"
+        ></script>
       </Head>
 
       {/* End of the head component of the webpages */}
@@ -48,7 +46,7 @@ export default function Layout({ children }) {
 
       <Nav />
       {children}
-      <Footer />
+      {/* <Footer /> */}
     </div>
 
     // Beginning for all pages as this is the default layout -- Defines the pages outlook

@@ -29,31 +29,68 @@ export default function index({ data }) {
     <div>
       {/* Start of the Main Section of the page */}
 
-      <main className="bg-gray-100 h-4/5 p-8">
-        <div className="banner flex flex-column items-center justify-center flex-wrap">
+      <main className="h-screen">
+        <div className="banner flex flex-col h-full w-full md:flex-row justify-center items-center md:items-start md:justify-start">
           {/* Banner Image Section */}
 
-          <div className="flex justify-center">
-            <Image src="/images/banner.png" height={500} width={500} />
+          <div className="aspect-w-3 aspect-h-4 flex items-center justify-center bg-secondary -mt-20 h-3/5 md:h-full w-full">
+            <div className="w-2/3 h-2/3 relative flex justify-center items-center md:-ml-10 z-0 -mt-24 md:-mt-0">
+              <Image
+                src="/images/banner.png"
+                objectFit="contain"
+                layout="fill"
+              />
+            </div>
           </div>
 
           {/* End Of Banner Image Section */}
 
           {/* Message Section */}
-          <div>
-            <h1 className="text-2xl font-serif tracking-wider md:text-5xl">
-              STYLISH . ELEGANT . MESSAGE
-            </h1>
-            <p className="mt-4 text-sm font-serif text-gray-500 md:text-2xl">
-              Monk is a clothing brand that does not only believe <br /> in
-              being kind but also in leading a humble Life. <br />
-              Dress Monk choose Peace
-            </p>
-            <input
-              type="submit"
-              value="Join Us!"
-              className="bg-transparent border border-gray-700 hover:shadow-lg block w-72 pl-7 pr-12 sm:text-sm border-gray-300  text-center p-4 font-bold cursor-pointer mt-4"
-            />
+          <div className="flex-col bg-primary h-2/5 md:h-4/5 w-11/12 -mt-24 md:w-1/2 md:-ml-24 md:mr-12 md:-mt-0 flex justify-evenly items-center md:justify-center md:items-start">
+            <div className="md:ml-12 md:mr-12">
+              <h1 className="text-xl font-serif tracking-wider md:text-5xl text-blue-secondary">
+                STYLE.ELEGANT.MESSAGE
+              </h1>
+            </div>
+            <div className="w-full md:w-2/3 md:ml-12 ml-4">
+              <p className="mt-4 text-sm font-poppins text-white-primary md:text-sm">
+                Monk is a clothing brand that does not only believe in being
+                kind but also in leading a humble Life. Dress Monk choose Peace
+              </p>
+            </div>
+            /
+            <div className="md:ml-12 bg-blue-secondary py-4 px-10 font-bold font-poppins w-2/3 md:w-1/3">
+              <Link href="/clothing/">GRAB A HOODIE</Link>
+            </div>
+            <div className="flex md:ml-12 mt-8">
+              <div className="aspect-w-3 aspect-h-4 h-12 w-12 relative cursor-pointer">
+                <div className="w-2/3 h-2/3 relative">
+                  <Image
+                    src="/images/iconmonstr-facebook-4.svg"
+                    objectFit="contain"
+                    layout="fill"
+                  />
+                </div>
+              </div>
+              <div className="aspect-w-3 aspect-h-4 h-12 w-12 relative cursor-pointer">
+                <div className="w-2/3 h-2/3 relative">
+                  <Image
+                    src="/images/iconmonstr-twitter-4.svg"
+                    objectFit="contain"
+                    layout="fill"
+                  />
+                </div>
+              </div>
+              <div className="aspect-w-3 aspect-h-4 h-12 w-12 relative cursor-pointer">
+                <div className="w-2/3 h-2/3 relative">
+                  <Image
+                    src="/images/iconmonstr-instagram-14.svg"
+                    objectFit="contain"
+                    layout="fill"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* End Of Image Section */}
@@ -63,7 +100,7 @@ export default function index({ data }) {
       {/* End of the Main Section of the Page */}
 
       {/* Call To Action for Different Clothing Product */}
-
+      {/* 
       <div className="flex flex-col items-center justify-center my-8 md:my-12 md:flex-row">
         <div className="py-2 md:mx-4">
           <input
@@ -86,15 +123,15 @@ export default function index({ data }) {
             className="font-serif tracking-wider bg-transparent border border-gray-700 hover:shadow-lg w-52 sm:text-sm border-gray-300 rounded-md text-center p-2 font-bold cursor-pointer"
           />
         </div>
-      </div>
+      </div> */}
 
       {/* End of Call To Action for Different Clothing Product */}
 
       {/* Beginning of the Products Snippets */}
 
-      <div className="flex flex-col my-2 mx-2 md:my-12 md:mx-24">
-        {/* Beginning for the Hood Product Module */}
-        <h1 className="font-serif text-sm px-2 py-2 md:px-16 md:py-8 md:text-2xl">
+      {/* <div className="flex flex-col my-2 mx-2 md:my-12 md:mx-24"> */}
+      {/* Beginning for the Hood Product Module */}
+      {/* <h1 className="font-serif text-sm px-2 py-2 md:px-16 md:py-8 md:text-2xl">
           Hoodies
         </h1>
         <div className="flex w-full justify-start md:justify-center relative">
@@ -130,13 +167,13 @@ export default function index({ data }) {
               <div>&rarr;</div>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        {/* End of the Hood Product Module */}
+      {/* End of the Hood Product Module */}
 
-        {/* Start of the T-Shirts Product Module */}
+      {/* Start of the T-Shirts Product Module */}
 
-        <h1 className="font-serif text-sm px-2 py-2 md:px-16 md:py-8 md:text-2xl">
+      {/* <h1 className="font-serif text-sm px-2 py-2 md:px-16 md:py-8 md:text-2xl">
           T-Shirts
         </h1>
         <div className="flex w-full justify-start md:justify-center relative">
@@ -172,13 +209,13 @@ export default function index({ data }) {
               <div>&rarr;</div>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        {/* End of the T-Shirts Product Module */}
+      {/* End of the T-Shirts Product Module */}
 
-        {/* Start of the Biker-Shorts Product Module */}
+      {/* Start of the Biker-Shorts Product Module */}
 
-        <h1 className="font-serif text-sm px-2 py-2 md:px-16 md:py-8 md:text-2xl">
+      {/* <h1 className="font-serif text-sm px-2 py-2 md:px-16 md:py-8 md:text-2xl">
           Biker Shorts
         </h1>
         <div className="flex w-full justify-start md:justify-center relative">
@@ -214,10 +251,10 @@ export default function index({ data }) {
               <div>&rarr;</div>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        {/* End of the Biker-Shorts Product Module */}
-      </div>
+      {/* End of the Biker-Shorts Product Module */}
+      {/* </div> */}
 
       {/* End of the Products Snippets */}
     </div>

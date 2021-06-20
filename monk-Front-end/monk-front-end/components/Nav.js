@@ -14,7 +14,7 @@ const nav = () => {
   return (
     // Beginning of the Main NavBar
 
-    <nav className="h-16 flex items-center justify-between md:mx-8">
+    <nav className="h-16 flex items-center justify-between md:mx-8 z-10 mx-4">
       {/* Start of the Product Logo */}
 
       <div className="">
